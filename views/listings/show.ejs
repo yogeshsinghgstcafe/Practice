@@ -1,0 +1,90 @@
+<% layout('/layouts/boilerplate')%>
+<body>
+    <div class="container mt-2 mb-3 lh-1">
+      <h5 class="card-title fs-4 fw-semibold text-center mb-2"><%=  chat.title %></h5>
+    <div class="card " style="width:55vw;margin:0 auto">
+      <div class="image overflow-hidden  d-flex flex-column align-items-center rounded-4" style="width:100%; height : 42vh">
+         <img class='object-fit-fill' style='width: 100%; height : 100%; 'src= <%=chat.image.url %>  || alt="image is not loaded">
+      </div> 
+      <div class="card-body pt-1 opacity-75 lh-1">
+        
+        <p class="cart-text mt-1 fw-semibold"><i>Owned by <%= chat.owner.username %></i></p>   
+        <p class="card-text font-monospace fw-medium"><%=  chat.description %></p>
+        <p>&#8377; <%= chat.price.toLocaleString('en-IN') %></p>
+        <p><%= chat.country %></p>
+        <p><%=  chat.location %></p>
+      </div>
+   <%if(currentUser && currentUser._id.equals(chat.owner._id)){%>
+    <div class="card-body  d-flex gap-3">
+      <form class='btn-danger'action="/listing/<%= chat.id %>/edit">
+         <button class="btn btn-danger ">Edit</button>
+      </form>
+      <form action="/listing/<%= chat.id %>?_method=DELETE" method="POST">
+         <button class="btn btn-secondary ">delete</button>
+      </form>
+   </div>
+  <% } %>
+
+    
+  
+     <% if(currentUser){%>
+      <hr>
+        <div class="lh-1">
+          <h5 class="fw-medium">Leave a Review</h5>
+          <form action="/listing/<%= chat.id %>/reviews" method="post" novalidate class="needs-validation">
+           <div class="">
+            <label for="rating" class="form-label">Rating</label>
+            <fieldset class="starability-slot">
+              <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="1" checked aria-label="No rating." />
+              <input type="radio" id="first-rate1" name="rating" value="1" />
+              <label for="first-rate1" title="Terrible">1 star</label>
+              <input type="radio" id="first-rate2" name="rating" value="2" />
+              <label for="first-rate2" title="Not good">2 stars</label>
+              <input type="radio" id="first-rate3" name="rating" value="3" />
+              <label for="first-rate3" title="Average">3 stars</label>
+              <input type="radio" id="first-rate4" name="rating" value="4" />
+              <label for="first-rate4" title="Very good">4 stars</label>
+              <input type="radio" id="first-rate5" name="rating" value="5" />
+              <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+           </div>
+            <div>
+              <label class="form-label"for="comment">Comments</label>
+              <textarea class='form-control'id='comment'type="text"  name='comment' rows="4" cols="28" required></textarea>
+                <div class="invalid-feedback">Please add some comment for review</div>
+            </div>
+            <button class="mt-3 btn btn-outline-dark">Submit</button>
+          </form>
+        </div>
+     <% } %>
+<hr>
+      <div>
+        <h6 class="fw-medium">All Reviews</h6>
+        
+        <!-- <p><%= chat.reviews %></p> -->
+        <div class="cards d-flex row-gap-1 column-gap-4 flex-wrap w-100">
+          <% for(let review of chat.reviews){%>
+       
+            <div class="card rounded-3  px-4 py-3 border border-light-subtle" style="width:48%;box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px">
+              <h5 class="card-title fw-semibold "><%=review.author.username%></h5>
+              <div  class="card-body" >
+               
+                <p class="starability-result cart-text" data-rating="<%= review.rating %>">
+                </p>
+              
+                <p class="card-text opacity-75 fw-medium"><%= review.comment %></p>
+                <form action="/listing/<%= chat._id%>/reviews/<%=review._id %>?_method=DELETE" method="post">
+                  <button class="btn btn-sm btn-dark">Delete</button>
+                </form>
+              </div>
+            </div>
+         
+         <% }%>
+        </div>
+  
+    </div>
+    </div>
+   
+    </div>
+ 
+</body>
